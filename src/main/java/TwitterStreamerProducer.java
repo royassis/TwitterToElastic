@@ -9,21 +9,20 @@ import com.twitter.hbc.core.event.Event;
 import com.twitter.hbc.core.processor.StringDelimitedProcessor;
 import com.twitter.hbc.httpclient.auth.Authentication;
 import com.twitter.hbc.httpclient.auth.OAuth1;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class ThreadFunction {
-    CountDownLatch latch;
+public class TwitterStreamerProducer {
+    static Logger logger = LoggerFactory.getLogger(TwitterStreamerProducer.class.getName());
 
-    public ThreadFunction(CountDownLatch latch){
-        this.latch = latch;
-    }
-
-    public void run() throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException {
         BlockingQueue<String> msgQueue = new LinkedBlockingQueue<String>(100000);
         BlockingQueue<Event> eventQueue = new LinkedBlockingQueue<Event>(1000);
 
@@ -39,7 +38,7 @@ public class ThreadFunction {
         hosebirdEndpoint.trackTerms(terms);
 
         String credsFilePath = "C:\\Users\\Roy\\javaProjects\\HosebirdClient\\src\\main\\resources\\creds.json";
-        JSONObject credsJson = JsonStuff.getJsonFromFile(credsFilePath);
+        JSONObject credsJson = JsonUtils.getJsonFromFile(credsFilePath);
 
         String apiKey = (String) credsJson.get("apiKey");
         String apiSecretKey = (String) credsJson.get("apiSecretKey");
@@ -62,14 +61,18 @@ public class ThreadFunction {
         // Attempts to establish a connection.
         hosebirdClient.connect();
 
+        KafkaProducer producer = KafkaProducerBuilder.getProducer();
+        String topic = "twitter-streaming-test";
+
         while (!hosebirdClient.isDone()) {
             String msg = msgQueue.take();
-            System.out.println(msg);
+            logger.info("sending messgae:" + msg + " to kafka topid "+ topic);
+            ProducerRecord<String,String> record = new ProducerRecord<>(topic,msg);
+            producer.send(record);
         }
 
+        producer.close();
         hosebirdClient.stop();
     }
 
 }
-
-
