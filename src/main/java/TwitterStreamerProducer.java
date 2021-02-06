@@ -9,9 +9,11 @@ import com.twitter.hbc.core.event.Event;
 import com.twitter.hbc.core.processor.StringDelimitedProcessor;
 import com.twitter.hbc.httpclient.auth.Authentication;
 import com.twitter.hbc.httpclient.auth.OAuth1;
+
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.json.simple.JSONObject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,10 +25,10 @@ public class TwitterStreamerProducer {
     static Logger logger = LoggerFactory.getLogger(TwitterStreamerProducer.class.getName());
 
     public static void main(String[] args) throws InterruptedException {
-        BlockingQueue<String> msgQueue = new LinkedBlockingQueue<String>(100000);
-        BlockingQueue<Event> eventQueue = new LinkedBlockingQueue<Event>(1000);
+        BlockingQueue<String> msgQueue = new LinkedBlockingQueue<>(100000);
+        BlockingQueue<Event> eventQueue = new LinkedBlockingQueue<>(1000);
 
-        /** Declare the host you want to connect to, the endpoint, and authentication (basic auth or oauth) */
+        /* Declare the host you want to connect to, the endpoint, and authentication (basic auth or oauth) */
         Hosts hosebirdHosts = new HttpHosts(Constants.STREAM_HOST);
         StatusesFilterEndpoint hosebirdEndpoint = new StatusesFilterEndpoint();
 
@@ -46,7 +48,10 @@ public class TwitterStreamerProducer {
         String accessTokenSecret = (String) credsJson.get("accessTokenSecret");
 
         // These secrets should be read from a config file
-        Authentication hosebirdAuth = new OAuth1(apiKey, apiSecretKey, accessToken, accessTokenSecret);
+        Authentication hosebirdAuth = new OAuth1(apiKey,
+                                                apiSecretKey,
+                                                accessToken,
+                                                accessTokenSecret);
 
         ClientBuilder builder = new ClientBuilder()
                 .name("Hosebird-Client-01")                              // optional: mainly for the logs
@@ -66,8 +71,8 @@ public class TwitterStreamerProducer {
 
         while (!hosebirdClient.isDone()) {
             String msg = msgQueue.take();
-            logger.info("sending messgae:" + msg + " to kafka topid "+ topic);
-            ProducerRecord<String,String> record = new ProducerRecord<>(topic,msg);
+            logger.info("sending messgae:" + msg + " to kafka topid " + topic);
+            ProducerRecord<String, String> record = new ProducerRecord<>(topic, msg);
             producer.send(record);
         }
 
