@@ -1,3 +1,4 @@
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 
@@ -18,9 +20,9 @@ import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.common.xcontent.XContentType;
 
 import java.io.IOException;
+
 
 public class ElasticSearchConsumerWithThread {
 
@@ -121,17 +123,26 @@ public class ElasticSearchConsumerWithThread {
                     for (ConsumerRecord<String, String> record : records) {
                         logger.info("requestId: " + requestId.toString() +" Key: " + record.key() + ", Value: " + record.value());
 //                        logger.info("Partition: " + record.partition() + ", Offset:" + record.offset());
-                        Thread.sleep(500);
+                        Thread.sleep(1);
 
-                        IndexRequest request = new IndexRequest("tweets");
-                        request.id(requestId.toString());
-                        String jsonString = record.value();
-                        request.source(jsonString, XContentType.JSON);
-                        IndexResponse indexResponse = client.index(request, RequestOptions.DEFAULT);
+                        ObjectMapper mapper = new ObjectMapper();
+                        Map<String,Object> map = mapper.readValue(record.value(), Map.class);
+
+                        String tweetText = (String)map.get("text");
+                        String created_at = (String)map.get("created_at");
+                        String id_str = (String)map.get("id_str");
+
+                        IndexRequest indexRequest = new IndexRequest("tweets")
+                                .id(requestId.toString())
+                                .source("tweetText", tweetText,
+                                        "created_at", created_at,
+                                        "id_str", id_str);
+//
+                        IndexResponse indexResponse = client.index(indexRequest, RequestOptions.DEFAULT);
                         requestId++;
                     }
                 }
-            } catch (WakeupException | IOException | InterruptedException e) {
+            } catch (WakeupException | InterruptedException | IOException e) {
                 logger.info("Received shutdown signal!");
             } finally {
                 consumer.close();
