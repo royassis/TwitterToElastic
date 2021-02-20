@@ -11,7 +11,7 @@
     <modules>
         <module>ElasticConsumer</module>
         <module>TwitterProducer</module>
-        <module>kafka-connect-twitter</module>
+        <module>kafka-streams-filter-tweets</module>
     </modules>
 
     <properties>
