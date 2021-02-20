@@ -19,7 +19,7 @@ public class TwitterStreamerProducer {
 
     public void run() throws InterruptedException {
         List<String> terms = Lists.newArrayList("twitter", "api");
-        String credsFilePath = "C:\\Users\\Roy\\javaProjects\\HosebirdClient\\src\\main\\resources\\creds.json";
+        String credsFilePath = "C:\\Users\\Roy\\javaProjects\\HosebirdClient\\TwitterProducer\\src\\main\\resources\\creds.json";
         BlockingQueue<String> msgQueue = new LinkedBlockingQueue<>(100000);
 
         Client hosebirdClient = HousebirdClientBuilder.getHousebirdClient(credsFilePath, terms, msgQueue);

@@ -1,17 +1,14 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.errors.WakeupException;
-import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 
 import org.apache.http.HttpHost;
@@ -67,9 +64,7 @@ public class ElasticSearchConsumerWithThread {
                 e.printStackTrace();
             }
             logger.info("Application has exited");
-        }
-
-        ));
+        }));
 
         try {
             latch.await();
@@ -82,28 +77,13 @@ public class ElasticSearchConsumerWithThread {
 
     public class ConsumerRunnable implements Runnable {
 
-        private CountDownLatch latch;
+        private final CountDownLatch latch;
         private KafkaConsumer<String, String> consumer;
-        private Logger logger = LoggerFactory.getLogger(ConsumerRunnable.class.getName());
+        private final Logger logger = LoggerFactory.getLogger(ConsumerRunnable.class.getName());
 
-        public ConsumerRunnable(String bootstrapServers,
-                                String groupId,
-                                String topic,
-                                CountDownLatch latch) {
+        public ConsumerRunnable(String bootstrapServers, String groupId, String topic, CountDownLatch latch) {
             this.latch = latch;
-
-            // create consumer configs
-            Properties properties = new Properties();
-            properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-            properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-            properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-            properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId);
-            properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-
-            // create consumer
-            consumer = new KafkaConsumer<String, String>(properties);
-            // subscribe consumer to our topic(s)
-            consumer.subscribe(Arrays.asList(topic));
+            this.consumer = KafkaConsumerBuilder.getKafkaConsumer(Arrays.asList(topic), groupId, bootstrapServers);
         }
 
         @Override
@@ -117,20 +97,19 @@ public class ElasticSearchConsumerWithThread {
             try {
                 Integer requestId = 1;
                 while (true) {
-                    ConsumerRecords<String, String> records =
-                            consumer.poll(Duration.ofMillis(100)); // new in Kafka 2.0.0
+                    ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100)); // new in Kafka 2.0.0
 
                     for (ConsumerRecord<String, String> record : records) {
-                        logger.info("requestId: " + requestId.toString() +" Key: " + record.key() + ", Value: " + record.value());
+                        logger.info("requestId: " + requestId.toString() + " Key: " + record.key() + ", Value: " + record.value());
 //                        logger.info("Partition: " + record.partition() + ", Offset:" + record.offset());
                         Thread.sleep(1);
 
                         ObjectMapper mapper = new ObjectMapper();
-                        Map<String,Object> map = mapper.readValue(record.value(), Map.class);
+                        Map<String, Object> map = mapper.readValue(record.value(), Map.class);
 
-                        String tweetText = (String)map.get("text");
-                        String created_at = (String)map.get("created_at");
-                        String id_str = (String)map.get("id_str");
+                        String tweetText = (String) map.get("text");
+                        String created_at = (String) map.get("created_at");
+                        String id_str = (String) map.get("id_str");
 
                         IndexRequest indexRequest = new IndexRequest("tweets")
                                 .id(requestId.toString())
@@ -142,7 +121,7 @@ public class ElasticSearchConsumerWithThread {
                         requestId++;
                     }
                 }
-            } catch (WakeupException | InterruptedException | IOException e) {
+            } catch (WakeupException | InterruptedException | IOException | NullPointerException e) {
                 logger.info("Received shutdown signal!");
             } finally {
                 consumer.close();

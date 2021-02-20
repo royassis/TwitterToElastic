@@ -1,2 +1,3 @@
 /.idea/
-/TwitterToElastic/src/main/resources/creds.json
+/TwitterProducer/src/main/resources/creds.json
+/kafka-connect-twitter/connectors/kafka-connect-twitter/
