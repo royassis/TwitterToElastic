@@ -35,7 +35,7 @@ public class TwitterStreamer {
         hosebirdEndpoint.trackTerms(terms);
 
 
-        String credsFilePath = "C:\\Users\\Roy\\javaProjects\\HosebirdClient\\src\\main\\resources\\creds.json";
+        String credsFilePath = "C:\\Users\\Roy\\javaProjects\\HosebirdClient\\creds.json";
         JSONObject credsJson = getJsonFromFile(credsFilePath);
 
         String apiKey = (String) credsJson.get("apiKey");

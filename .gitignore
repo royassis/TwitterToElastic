@@ -1,3 +1,4 @@
 /.idea/
 /TwitterProducer/src/main/resources/creds.json
 /kafka-connect-twitter/connectors/kafka-connect-twitter/
+/creds.json
