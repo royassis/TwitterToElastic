@@ -22,16 +22,15 @@ class Foo<Key, Val> implements Predicate<Key, Val> {
 
     @Override
     public boolean test(Key k, Val jsonTweet) {
-        Integer cutoff = 10000;
+        Integer cutoff = 1000;
         Boolean retval = false;
         Integer followers_count = 0;
 
         Gson gson = new Gson();
         JsonObject jsonObject = gson.fromJson((String) jsonTweet, JsonObject.class);
         try {
-            followers_count = jsonObject.get("payload").getAsJsonObject()
-                    .get("User").getAsJsonObject()
-                    .get("FollowersCount").getAsInt();
+            followers_count = jsonObject.get("user").getAsJsonObject()
+                    .get("followers_count").getAsInt();
             logger.info("The followers count is: " + followers_count.toString());
         } catch (NullPointerException e) {
             logger.error("No followers_count key in tweet");
@@ -50,14 +49,14 @@ public class StreamsFilterTweets {
         Logger logger = LoggerFactory.getLogger(StreamsFilterTweets.class.getName());
 
         Properties properties = new Properties();
-        properties.setProperty(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        properties.setProperty(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "172.31.68.46:9092");
         properties.setProperty(StreamsConfig.APPLICATION_ID_CONFIG, "demo-kafka-streams-2");
         properties.setProperty(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.StringSerde.class.getName());
         properties.setProperty(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.StringSerde.class.getName());
 
         StreamsBuilder streamsBuilder = new StreamsBuilder();
 
-        KStream<String, String> inputTopic = streamsBuilder.stream("twitter_status_connect");
+        KStream<String, String> inputTopic = streamsBuilder.stream("twitter-streaming-test");
         KStream<String, String> filteredStream = inputTopic.filter(
                 new Foo<String, String>()
         );

@@ -5,8 +5,7 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 
 public class KafkaProducerBuilder {
-    public static KafkaProducer getProducer () {
-        String host = "localhost:9092";
+    public static KafkaProducer getProducer (String host) {
 
         Properties props = new Properties();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, host);

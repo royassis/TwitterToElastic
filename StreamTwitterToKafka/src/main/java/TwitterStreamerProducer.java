@@ -27,7 +27,7 @@ public class TwitterStreamerProducer {
         // Attempts to establish a connection.
         hosebirdClient.connect();
 
-        KafkaProducer producer = KafkaProducerBuilder.getProducer();
+        KafkaProducer producer = KafkaProducerBuilder.getProducer("172.31.68.46:9092");
         String topic = "twitter-streaming-test";
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
