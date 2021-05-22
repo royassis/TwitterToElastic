@@ -1,4 +1,6 @@
 import com.google.common.collect.Lists;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.twitter.hbc.ClientBuilder;
 import com.twitter.hbc.core.Client;
 import com.twitter.hbc.core.Constants;
@@ -61,7 +63,9 @@ public class TwitterStreamer {
 
         while (!hosebirdClient.isDone()) {
             String msg = msgQueue.take();
-            System.out.println(msg);
+            Gson gson = new Gson();
+            JsonObject jsonObject = gson.fromJson(msg, JsonObject.class);
+            System.out.println(jsonObject);
         }
 
         hosebirdClient.stop();
