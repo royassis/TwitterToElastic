@@ -7,9 +7,9 @@
         <groupId>org.roy.assis</groupId>
         <version>1.0.0</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>TwitterProducer</artifactId>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>StreamTwitterToKafka</artifactId>
 
     <dependencies>
         <dependency>
@@ -101,7 +101,6 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-
         </dependencies>
 
     </dependencyManagement>

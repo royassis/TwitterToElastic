@@ -2,16 +2,21 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>HosebirdClient</artifactId>
+        <groupId>org.roy.assis</groupId>
+        <version>1.0.0</version>
+    </parent>
 
-    <artifactId>OtherStuff</artifactId>
-    <groupId>org.roy.assis</groupId>
-    <version>1.0.0</version>
     <modelVersion>4.0.0</modelVersion>
+    <artifactId>TwitterToTerminal</artifactId>
+    <version>1.0.0</version>
+    <groupId>org.roy.assis</groupId>
 
-    <properties>
-        <maven.compiler.source>15</maven.compiler.source>
-        <maven.compiler.target>15</maven.compiler.target>
-    </properties>
+<!--    <properties>-->
+<!--        <maven.compiler.source>11</maven.compiler.source>-->
+<!--        <maven.compiler.target>11</maven.compiler.target>-->
+<!--    </properties>-->
 
     <dependencies>
         <dependency>

@@ -3,3 +3,4 @@
 /kafka-connect-twitter/connectors/kafka-connect-twitter/
 /creds.json
 /kafka-connect-twitter/twitter.properties
+/StreamTwitterToKafka/src/main/resources/creds.json

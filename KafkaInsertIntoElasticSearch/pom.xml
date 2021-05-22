@@ -7,9 +7,9 @@
         <groupId>org.roy.assis</groupId>
         <version>1.0.0</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>ElasticConsumer</artifactId>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>KafkaInsertIntoElasticSearch</artifactId>
 
     <dependencies>
         <dependency>

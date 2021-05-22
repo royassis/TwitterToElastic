@@ -7,10 +7,9 @@
         <groupId>org.roy.assis</groupId>
         <version>1.0.0</version>
     </parent>
+
     <modelVersion>4.0.0</modelVersion>
-
-    <artifactId>kafka-streams-filter-tweets</artifactId>
-
+    <artifactId>TweeterWithKafkaStreams</artifactId>
 
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka-streams -->
@@ -34,8 +33,6 @@
             <artifactId>gson</artifactId>
             <version>2.8.6</version>
         </dependency>
-
-
     </dependencies>
 
 </project>
