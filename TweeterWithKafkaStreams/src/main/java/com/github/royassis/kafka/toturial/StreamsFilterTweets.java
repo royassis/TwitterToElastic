@@ -10,30 +10,34 @@ import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.util.Properties;
 
 
-class Foo<Key, Val> implements Predicate<Key, Val>{
+class Foo<Key, Val> implements Predicate<Key, Val> {
     Logger logger = LoggerFactory.getLogger(StreamsFilterTweets.class.getName());
-    Foo(){}
+
+    Foo() {
+    }
+
     @Override
     public boolean test(Key k, Val jsonTweet) {
         Integer cutoff = 10000;
         Boolean retval = false;
         Integer followers_count = 0;
 
-        Gson gson =  new Gson();
-        JsonObject jsonObject = gson.fromJson((String)jsonTweet, JsonObject.class);
+        Gson gson = new Gson();
+        JsonObject jsonObject = gson.fromJson((String) jsonTweet, JsonObject.class);
         try {
             followers_count = jsonObject.get("payload").getAsJsonObject()
                     .get("User").getAsJsonObject()
                     .get("FollowersCount").getAsInt();
             logger.info("The followers count is: " + followers_count.toString());
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             logger.error("No followers_count key in tweet");
         }
 
-        if (followers_count >cutoff) {
+        if (followers_count > cutoff) {
             retval = true;
         }
 
@@ -55,7 +59,7 @@ public class StreamsFilterTweets {
 
         KStream<String, String> inputTopic = streamsBuilder.stream("twitter_status_connect");
         KStream<String, String> filteredStream = inputTopic.filter(
-                new Foo<String,String>()
+                new Foo<String, String>()
         );
         filteredStream.to("important_tweets");
 
