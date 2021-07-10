@@ -14,10 +14,10 @@ import org.slf4j.LoggerFactory;
 import java.util.Properties;
 
 
-class Foo<Key, Val> implements Predicate<Key, Val> {
+class TweetFilter<Key, Val> implements Predicate<Key, Val> {
     Logger logger = LoggerFactory.getLogger(StreamsFilterTweets.class.getName());
 
-    Foo() {
+    TweetFilter() {
     }
 
     @Override
@@ -58,7 +58,7 @@ public class StreamsFilterTweets {
 
         KStream<String, String> inputTopic = streamsBuilder.stream("twitter-streaming-test");
         KStream<String, String> filteredStream = inputTopic.filter(
-                new Foo<String, String>()
+                new TweetFilter<String, String>()
         );
         filteredStream.to("important_tweets");
 
