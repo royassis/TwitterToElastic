@@ -8,18 +8,20 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class TwitterStreamerProducer {
-    static Logger logger = LoggerFactory.getLogger(TwitterStreamerProducer.class.getName());
+public class TwitterKafkaProducerTest {
+    static Logger logger = LoggerFactory.getLogger(TwitterKafkaProducerTest.class.getName());
+
+    //TODO: change these when running on another host
+    public static String kafkaHost = "172.31.5.128:9092";
+    public static String credsFilePath = "C:\\Users\\Roy\\javaProjects\\HosebirdClient\\creds.json";
+    public static String topic = "twitter-streaming-test";
 
     public static void main(String[] args) throws InterruptedException {
-        new TwitterStreamerProducer().run();
+        new TwitterKafkaProducerTest().run();
     }
-
-    public TwitterStreamerProducer(){}
 
     public void run() throws InterruptedException {
         List<String> terms = Lists.newArrayList("twitter", "api");
-        String credsFilePath = "C:\\Users\\Roy\\javaProjects\\HosebirdClient\\creds.json";
         BlockingQueue<String> msgQueue = new LinkedBlockingQueue<>(100000);
 
         Client hosebirdClient = HousebirdClientBuilder.getHousebirdClient(credsFilePath, terms, msgQueue);
@@ -27,11 +29,10 @@ public class TwitterStreamerProducer {
         // Attempts to establish a connection.
         hosebirdClient.connect();
 
-        KafkaProducer producer = KafkaProducerBuilder.getProducer("172.31.68.46:9092");
-        String topic = "twitter-streaming-test";
+        KafkaProducer producer = KafkaProducerBuilder.getProducer(kafkaHost);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            new TwitterStreamerProducer().shutdown(producer, hosebirdClient);
+            new TwitterKafkaProducerTest().shutdown(producer, hosebirdClient);
             logger.info("Application has exited");
         }));
 
@@ -42,7 +43,7 @@ public class TwitterStreamerProducer {
             producer.send(record);
         }
 
-        new TwitterStreamerProducer().shutdown(producer, hosebirdClient);
+        new TwitterKafkaProducerTest().shutdown(producer, hosebirdClient);
     }
 
     public void shutdown(KafkaProducer producer, Client hosebirdClient){
