@@ -31,7 +31,7 @@ Code is formatted better.
 Using kafka streaming API, reads tweets from one topic, filters and inserts into another, based on some key value of tweet.
   
 ##### TwitterToTerminal
-Get tweets using the housebird client and inserts into a kafka topic. 
+Get tweets using the housebird client and print on screen. 
 
 ## Cavets 
 #### Tweeter API
