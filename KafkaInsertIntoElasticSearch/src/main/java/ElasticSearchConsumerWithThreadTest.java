@@ -21,22 +21,18 @@ import org.elasticsearch.client.RestHighLevelClient;
 import java.io.IOException;
 
 
-public class ElasticSearchConsumerWithThread {
+public class ElasticSearchConsumerWithThreadTest {
+    public static Logger logger = LoggerFactory.getLogger(ElasticSearchConsumerWithThreadTest.class.getName());
+
+    public static String bootstrapServers = "172.31.5.128:9092";
+    public static String groupId = "my-new-application";
+    public static String topic = "twitter-streaming-test";
 
     public static void main(String[] args) {
-        new ElasticSearchConsumerWithThread().run();
-    }
-
-    private ElasticSearchConsumerWithThread() {
-
+        new ElasticSearchConsumerWithThreadTest().run();
     }
 
     private void run() {
-        Logger logger = LoggerFactory.getLogger(ElasticSearchConsumerWithThread.class.getName());
-
-        String bootstrapServers = "127.0.0.1:9092";
-        String groupId = "my-new-application";
-        String topic = "twitter-streaming-test";
 
         // latch for dealing with multiple threads
         CountDownLatch latch = new CountDownLatch(1);

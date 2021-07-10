@@ -8,7 +8,7 @@ import org.elasticsearch.common.xcontent.XContentType;
 
 import java.io.IOException;
 
-public class ElasticSearchClientTest {
+public class ElasticSearchClientSimpleTest {
     public static void main(String[] args) throws IOException {
         RestHighLevelClient client = new RestHighLevelClient(
                 RestClient.builder(
