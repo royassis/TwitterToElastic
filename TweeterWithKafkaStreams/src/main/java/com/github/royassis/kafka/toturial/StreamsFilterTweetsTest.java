@@ -15,7 +15,7 @@ import java.util.Properties;
 
 
 class TweetFilter<Key, Val> implements Predicate<Key, Val> {
-    Logger logger = LoggerFactory.getLogger(StreamsFilterTweets.class.getName());
+    Logger logger = LoggerFactory.getLogger(StreamsFilterTweetsTest.class.getName());
 
     TweetFilter() {
     }
@@ -44,9 +44,9 @@ class TweetFilter<Key, Val> implements Predicate<Key, Val> {
     }
 }
 
-public class StreamsFilterTweets {
+public class StreamsFilterTweetsTest {
     public static void main(String[] args) {
-        Logger logger = LoggerFactory.getLogger(StreamsFilterTweets.class.getName());
+        Logger logger = LoggerFactory.getLogger(StreamsFilterTweetsTest.class.getName());
 
         Properties properties = new Properties();
         properties.setProperty(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "172.31.68.46:9092");
